@@ -35,3 +35,66 @@ export const posts = createTable(
 );
 
 
+export const drinks = createTable("drink", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  organisationId: text("organisation_id").notNull(),
+  createdAt: int("created_at", { mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+    updatedAt: int("updatedAt", { mode: "timestamp" }).$onUpdate(
+      () => new Date())
+});
+
+export const milk = createTable("milk", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  organisationId: text("organisation_id").notNull(),
+  createdAt: int("created_at", { mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+    updatedAt: int("updatedAt", { mode: "timestamp" }).$onUpdate(
+      () => new Date())
+});
+
+export const sugar = createTable("sugar", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  organisationId: text("organisation_id").notNull(),
+  createdAt: int("created_at", { mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+    updatedAt: int("updatedAt", { mode: "timestamp" }).$onUpdate(
+      () => new Date())
+});
+
+export const orders = createTable("order", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  userId: text("user_id").notNull(),
+  drinkId: int("drink_id").notNull().references(() => drinks.id),
+  milkId: int("milk_id").references(() => milk.id),
+  sugarId: int("sugar_id").references(() => sugar.id),
+  status: text("status", { enum: ["placed", "making", "delivered"] }).notNull().default("placed"),
+  organisationId: text("organisation_id").notNull(),
+  createdAt: int("created_at", { mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+    updatedAt: int("updatedAt", { mode: "timestamp" }).$onUpdate(
+      () => new Date())
+});
+
+// Define relations
+export const ordersRelations = relations(orders, ({ one }) => ({
+  drink: one(drinks, {
+    fields: [orders.drinkId],
+    references: [drinks.id],
+  }),
+  milk: one(milk, {
+    fields: [orders.milkId],
+    references: [milk.id],
+  }),
+  sugar: one(sugar, {
+    fields: [orders.sugarId],
+    references: [sugar.id],
+  }),
+}));
