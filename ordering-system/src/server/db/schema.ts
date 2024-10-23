@@ -70,6 +70,7 @@ export const sugar = createTable("sugar", {
 export const orders = createTable("order", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   userId: text("user_id").notNull(),
+  userName: text("user_name").notNull(),
   drinkId: int("drink_id").notNull().references(() => drinks.id),
   milkId: int("milk_id").references(() => milk.id),
   sugarId: int("sugar_id").references(() => sugar.id),
