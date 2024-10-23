@@ -34,7 +34,6 @@ export const posts = createTable(
   })
 );
 
-
 export const drinks = createTable("drink", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),

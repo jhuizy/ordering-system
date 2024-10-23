@@ -41,6 +41,7 @@ export function Navbar() {
                 <>
                   <NavLink href="/orders">Place Order</NavLink>
                   <NavLink href="/incoming">Incoming Orders</NavLink>
+                  <NavLink href="/settings">Settings</NavLink>
                 </>
               )}
             </div>
@@ -116,6 +117,12 @@ export function Navbar() {
                 className="block border-l-4 border-transparent"
               >
                 Incoming Orders
+              </NavLink>
+              <NavLink 
+                href="/settings"
+                className="block border-l-4 border-transparent"
+              >
+                Settings 
               </NavLink>
             </>
           )}
