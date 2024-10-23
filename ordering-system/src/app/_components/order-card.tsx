@@ -4,7 +4,7 @@
 import { type RouterOutputs } from "~/trpc/react";
 import { CheckCircle2, Clock, Coffee, Droplets, PillIcon, FileWarning } from "lucide-react";
 
-type Order = RouterOutputs["orders"]["getAll"][number];
+type Order = RouterOutputs["orders"]["getAllForUser"][number];
 
 const StatusBadge = ({ status }: { status: string }) => {
   const style = {

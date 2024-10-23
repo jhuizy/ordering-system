@@ -40,6 +40,7 @@ export function Navbar() {
               {isSignedIn && (
                 <>
                   <NavLink href="/orders">Place Order</NavLink>
+                  <NavLink href="/history">My Orders</NavLink>
                   <NavLink href="/incoming">Incoming Orders</NavLink>
                   <NavLink href="/settings">Settings</NavLink>
                 </>
@@ -117,6 +118,12 @@ export function Navbar() {
                 className="block border-l-4 border-transparent"
               >
                 Incoming Orders
+              </NavLink>
+              <NavLink 
+                href="/history"
+                className="block border-l-4 border-transparent"
+              >
+                My Orders
               </NavLink>
               <NavLink 
                 href="/settings"

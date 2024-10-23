@@ -45,7 +45,7 @@ export const ordersRouter = createTRPCRouter({
     }),
 
   // Get user's orders
-  getAll: protectedProcedure.query(async ({ ctx }) => {
+  getAllForUser: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.query.orders.findMany({
       where: eq(orders.userId, ctx.session.userId),
       orderBy: [desc(orders.createdAt)],

@@ -8,7 +8,7 @@ import { OrdersList } from "./order-list";
 export default function IncomingOrders() {
   const [activeFilter, setActiveFilter] = useState<"all" | "active" | "completed">("active");
   
-  const { data: orders, refetch } = api.orders.getAll.useQuery();
+  const { data: orders, refetch } = api.orders.getAllForOrg.useQuery({}, { refetchInterval: 2000 })
   const updateOrder = api.orders.update.useMutation({
     onSuccess: () => refetch()
   });

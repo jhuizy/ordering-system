@@ -4,7 +4,7 @@
 import { type RouterOutputs } from "~/trpc/react";
 import { OrderCard } from "./order-card";
 
-type Order = RouterOutputs["orders"]["getAll"][number];
+type Order = RouterOutputs["orders"]["getAllForUser"][number];
 
 type OrdersListProps = {
   orders: Order[];
