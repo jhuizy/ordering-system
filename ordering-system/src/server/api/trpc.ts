@@ -9,6 +9,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { initTRPC, TRPCError } from "@trpc/server";
+import { RollerCoaster } from "lucide-react";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -130,4 +131,13 @@ export const protectedProcedure = t.procedure
         session: { ...ctx.session, userId: ctx.session.userId, orgId: ctx.session.orgId }
       },
     });
+  });
+
+export const protectedProcedureFor = (permissions: ClerkAuthorization["permission"][]) => protectedProcedure
+  .use(({ ctx, next }) => {
+    if (permissions.some(permission => !ctx.session.has({ permission }))) {
+      throw new TRPCError({ code: "UNAUTHORIZED", message: "User does not have permission to access this resource"});
+    }
+
+    return next()
   });

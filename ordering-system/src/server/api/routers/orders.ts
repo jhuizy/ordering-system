@@ -1,12 +1,12 @@
 // src/server/api/routers/orders.ts
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedureFor } from "../trpc";
 import { orders } from "~/server/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { currentUser } from "@clerk/nextjs/server";
 
 export const ordersRouter = createTRPCRouter({
-  create: protectedProcedure
+  create: protectedProcedureFor(["org:feature:drinker"])
     .input(
       z.object({
         drinkId: z.number(),
@@ -17,7 +17,7 @@ export const ordersRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user = await currentUser()
 
-      if (!user) {
+      if (!user?.fullName) {
         throw new Error("User not found");
       }
 
@@ -31,7 +31,7 @@ export const ordersRouter = createTRPCRouter({
         status: "placed",
       });
     }),
-  update: protectedProcedure
+  update: protectedProcedureFor(["org:feature:barista"])
     .input(
       z.object({
         orderId: z.number(),
@@ -45,29 +45,31 @@ export const ordersRouter = createTRPCRouter({
     }),
 
   // Get user's orders
-  getAllForUser: protectedProcedure.query(async ({ ctx }) => {
-    return ctx.db.query.orders.findMany({
-      where: eq(orders.userId, ctx.session.userId),
-      orderBy: [desc(orders.createdAt)],
-      with: {
-        drink: true,
-        milk: true,
-        sugar: true,
-      },
-    });
-  }),
+  getAllForUser: protectedProcedureFor(["org:feature:drinker"])
+    .query(async ({ ctx }) => {
+      return ctx.db.query.orders.findMany({
+        where: eq(orders.userId, ctx.session.userId),
+        orderBy: [desc(orders.createdAt)],
+        with: {
+          drink: true,
+          milk: true,
+          sugar: true,
+        },
+      });
+    }),
 
   // Get all orders for the organization (for baristas)
-  getAllForOrg: protectedProcedure.query(async ({ ctx }) => {
-    // You might want to check if user is barista here
-    return ctx.db.query.orders.findMany({
-      where: eq(orders.organisationId, ctx.session.orgId),
-      orderBy: [desc(orders.createdAt)],
-      with: {
-        drink: true,
-        milk: true,
-        sugar: true,
-      },
-    });
-  }),
+  getAllForOrg: protectedProcedureFor(["org:feature:barista"])
+    .query(async ({ ctx }) => {
+      // You might want to check if user is barista here
+      return ctx.db.query.orders.findMany({
+        where: eq(orders.organisationId, ctx.session.orgId),
+        orderBy: [desc(orders.createdAt)],
+        with: {
+          drink: true,
+          milk: true,
+          sugar: true,
+        },
+      });
+    }),
 });
