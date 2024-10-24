@@ -1,4 +1,5 @@
 // src/app/orders/page.tsx
+import ActiveOrderCheck from "../_components/active-order-check";
 import { CreateOrderForm } from "../_components/create-order-form";
 import Overlay from "../_components/overlay";
 
@@ -12,6 +13,7 @@ export default function OrdersPage() {
               Select your drink and customize it to your liking.
             </p>
           </div>
+          <ActiveOrderCheck />
           <CreateOrderForm />
         </div>
       </Overlay>

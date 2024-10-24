@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedureFor } from "../trpc";
 import { orders } from "~/server/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, or, and } from "drizzle-orm";
 import { currentUser } from "@clerk/nextjs/server";
 
 export const ordersRouter = createTRPCRouter({
@@ -42,6 +42,24 @@ export const ordersRouter = createTRPCRouter({
       return ctx.db.update(orders).set({
         status: input.status,
       }).where(eq(orders.id, input.orderId));
+    }),
+
+  getActiveOrderForUser: protectedProcedureFor(["org:feature:drinker"])
+    .query(async ({ ctx }) => {
+      return ctx.db.query.orders.findFirst({
+        where: and(
+          eq(orders.userId, ctx.session.userId),
+          or(
+            eq(orders.status, "placed"),
+            eq(orders.status, "making")
+          )
+        ),
+        with: {
+          drink: true,
+          milk: true,
+          sugar: true,
+        },
+      });
     }),
 
   // Get user's orders
